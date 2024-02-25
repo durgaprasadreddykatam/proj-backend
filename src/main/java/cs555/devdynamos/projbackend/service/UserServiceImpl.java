@@ -32,4 +32,12 @@ public class UserServiceImpl implements UserService {
         UUID userId=userRepository.create(firstName,lastName,email,password);
         return userRepository.findById(userId);
      }
+
+    @Override
+    public User updateUser(String firstName, String lastName, String email, String password) throws EtAuthException {
+        if(email!=null) email=email.toLowerCase();
+        Integer count =userRepository.getCountByEmail(email);
+        if(count<0) throw new EtAuthException("Email id not in Use");
+        return userRepository.update(firstName,lastName,email,password);
+    }
 }

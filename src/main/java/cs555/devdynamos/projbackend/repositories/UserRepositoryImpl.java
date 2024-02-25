@@ -29,6 +29,7 @@ public class UserRepositoryImpl implements UserRepository{
     public static final String SQL_FINDBY_EMAIL=
             "SELECT USER_ID,FIRST_NAME,LAST_NAME,EMAIL,PASSWORD " +
                     "FROM USERS WHERE EMAIL = ? ";
+    public static final String SQL_UPDATE_USER="UPDATE USERS SET first_name=?,last_name=?,password=? WHERE email=?";
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -42,6 +43,19 @@ public class UserRepositoryImpl implements UserRepository{
             return userId;
         }catch(Exception e){
             throw new EtAuthException("Invalid Details. Failed to create new User");
+        }
+    }
+    @Override
+    public User update(String firstName, String lastName, String email, String password) throws EtAuthException{
+        String hashedPassword=BCrypt.hashpw(password,BCrypt.gensalt(7));
+        try {
+            User user= jdbcTemplate.queryForObject(SQL_FINDBY_EMAIL, new Object[] {email},userRowMapper);
+            jdbcTemplate.update(SQL_UPDATE_USER, firstName, lastName, hashedPassword, email);
+            return user;
+        }
+
+        catch(EmptyResultDataAccessException e){
+            throw new EtAuthException("Email Cannot be Updated");
         }
     }
 
