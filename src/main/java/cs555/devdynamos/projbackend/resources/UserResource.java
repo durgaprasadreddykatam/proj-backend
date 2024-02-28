@@ -8,10 +8,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -19,6 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserResource {
     @Autowired
     UserService userService;
@@ -46,6 +44,14 @@ public class UserResource {
         String email=(String) userMap.get("email");
         String password=(String) userMap.get("password");
         User user=userService.updateUser(firstname,lastname,email,password);
+        return "User Details have been Sucessfully Updated for user :"+user.getEmail();
+    }
+    @PostMapping("/update1")
+    public String updateUser1(@RequestBody Map<String,Object> userMap){
+        String firstname=(String) userMap.get("firstName");
+        String lastname=(String) userMap.get("lastName");
+        String email=(String) userMap.get("email");
+        User user=userService.updateUser(firstname,lastname,email);
         return "User Details have been Sucessfully Updated for user :"+user.getEmail();
     }
     private Map<String,String> generateJwtToken(User user){

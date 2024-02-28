@@ -30,6 +30,7 @@ public class UserRepositoryImpl implements UserRepository{
             "SELECT USER_ID,FIRST_NAME,LAST_NAME,EMAIL,PASSWORD " +
                     "FROM USERS WHERE EMAIL = ? ";
     public static final String SQL_UPDATE_USER="UPDATE USERS SET first_name=?,last_name=?,password=? WHERE email=?";
+    public static final String SQL_UPDATE_USER1="UPDATE USERS SET first_name=?,last_name=? WHERE email=?";
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -51,6 +52,20 @@ public class UserRepositoryImpl implements UserRepository{
         try {
             User user= jdbcTemplate.queryForObject(SQL_FINDBY_EMAIL, new Object[] {email},userRowMapper);
             jdbcTemplate.update(SQL_UPDATE_USER, firstName, lastName, hashedPassword, email);
+            return user;
+        }
+
+        catch(EmptyResultDataAccessException e){
+            throw new EtAuthException("Email Cannot be Updated");
+        }
+    }
+
+    @Override
+    public User update(String firstName, String lastName, String email) throws EtAuthException {
+
+        try {
+            User user= jdbcTemplate.queryForObject(SQL_FINDBY_EMAIL, new Object[] {email},userRowMapper);
+            jdbcTemplate.update(SQL_UPDATE_USER1, firstName, lastName, email);
             return user;
         }
 
