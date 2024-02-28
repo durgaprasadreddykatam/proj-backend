@@ -50,4 +50,4 @@ jobs:
           app-name: 'LieDetector'
           slot-name: 'Production'
           package: '*.jar'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0B4F4B7E205A426F848F5DB2B3A0B160 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B2113366B9B549EA83A17B8DD589768A }}
