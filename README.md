@@ -6,7 +6,7 @@ This Java backend server provides API endpoints for user registration and authen
 
 ### User Registration
 
-- **Endpoint**: `https://liedetector.azurewebsites.net/api/users/register`
+- **Endpoint**: `http://ip-address:8080/api/users/register`
 - **Method**: `POST`
 
 **Json Form Data for Registering a New User**:
@@ -22,7 +22,7 @@ This Java backend server provides API endpoints for user registration and authen
 
 ### User Login
 
-- **Endpoint**: `https://liedetector.azurewebsites.net/api/users/login`
+- **Endpoint**: `http://ip-address:8080/api/users/login`
 - **Method**: `POST`
 
 **Json Form Data for User Login**:
@@ -36,7 +36,7 @@ This Java backend server provides API endpoints for user registration and authen
 
 ### User Details Update(If Password is also modified by user)
 
-- **Endpoint**:`https://liedetector.azurewebsites.net/api/users/update`
+- **Endpoint**:`http://ip-address:8080/api/users/update`
 - **Method**:`POST`
 - **Header** Key:`Authorization` Value:`BearerJWTToken`
 
@@ -53,7 +53,7 @@ This Java backend server provides API endpoints for user registration and authen
 
 ### User Details Update(If Password is not modified by user)
 
-- **Endpoint**:`https://liedetector.azurewebsites.net/api/users/update1`
+- **Endpoint**:`http://ip-address:8080/api/users/update1`
 - **Method**:`POST`
 - **Header** Key:`Authorization` Value:`BearerJWTToken`
 
