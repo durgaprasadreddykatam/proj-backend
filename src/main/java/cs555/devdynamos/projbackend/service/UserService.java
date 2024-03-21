@@ -14,4 +14,8 @@ public interface UserService {
     User updateUser( String firstName, String lastName, String email, String password) throws EtAuthException;
 
     User updateUser( String firstName, String lastName, String email) throws EtAuthException;
+
+    String updateIntroTest(String userId, boolean introTestTaken);
+
+    String updateIntroSeen(String userId, boolean introSeen);
 }

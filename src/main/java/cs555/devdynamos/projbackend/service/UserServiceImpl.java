@@ -50,4 +50,26 @@ public class UserServiceImpl implements UserService {
         return userRepository.update(firstName, lastName, email);
 
     }
+
+    @Override
+    public String updateIntroTest(String userId, boolean introTestTaken) throws EtAuthException {
+        User user=userRepository.findById(UUID.fromString(userId));
+        if(user !=null) {
+            return userRepository.updateIntroTest(UUID.fromString(userId),introTestTaken);
+        }
+        else{
+            throw new EtAuthException("Invalid User Id");
+        }
+    }
+
+    @Override
+    public String updateIntroSeen(String userId, boolean introSeen) throws EtAuthException {
+        User user=userRepository.findById(UUID.fromString(userId));
+        if(user !=null) {
+            return userRepository.updateIntroSeen(UUID.fromString(userId),introSeen);
+        }
+        else{
+            throw new EtAuthException("Invalid User Id");
+        }
+    }
 }

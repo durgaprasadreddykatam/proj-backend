@@ -19,18 +19,22 @@ import java.util.UUID;
 @Repository
 public class UserRepositoryImpl implements UserRepository{
 
-    public static final String SQL_CREATE="INSERT INTO USERS(USER_ID,FIRST_NAME,LAST_NAME,EMAIL,PASSWORD) VALUES (?,?,?,?,?)";
+    public static final String SQL_CREATE="INSERT INTO USERS(USER_ID,FIRST_NAME,LAST_NAME,EMAIL,PASSWORD,INTRO_TAKEN,INTRO_SEEN) VALUES (?,?,?,?,?,?,?)";
 
     public static final String SQL_COUNT_BY_EMAIL="SELECT COUNT(*) FROM USERS WHERE EMAIL = ?";
     public static final String SQL_FIND_BY_USERID=
-            "SELECT USER_ID,FIRST_NAME,LAST_NAME,EMAIL,PASSWORD" +
+            "SELECT USER_ID,FIRST_NAME,LAST_NAME,EMAIL,PASSWORD,INTRO_TAKEN,INTRO_SEEN" +
                     " FROM USERS WHERE USER_ID = ?";
 
     public static final String SQL_FINDBY_EMAIL=
-            "SELECT USER_ID,FIRST_NAME,LAST_NAME,EMAIL,PASSWORD " +
+            "SELECT USER_ID,FIRST_NAME,LAST_NAME,EMAIL,PASSWORD,INTRO_TAKEN,INTRO_SEEN " +
                     "FROM USERS WHERE EMAIL = ? ";
     public static final String SQL_UPDATE_USER="UPDATE USERS SET first_name=?,last_name=?,password=? WHERE email=?";
     public static final String SQL_UPDATE_USER1="UPDATE USERS SET first_name=?,last_name=? WHERE email=?";
+
+    public static final String SQL_UPDATE_INTRO_SEEN="UPDATE USERS SET intro_seen = ? WHERE user_id = ?";
+
+    public static final String SQL_UPDATE_INTRO_TEST = "UPDATE USERS SET INTRO_TAKEN = CAST(? AS BOOLEAN) WHERE USER_ID = ?";
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -40,7 +44,7 @@ public class UserRepositoryImpl implements UserRepository{
         String hashedpassword = BCrypt.hashpw(password,BCrypt.gensalt(7));
         try{
             UUID userId=UUID.randomUUID();
-            jdbcTemplate.update(SQL_CREATE, userId.toString(), firstName, lastName, email, hashedpassword);
+            jdbcTemplate.update(SQL_CREATE, userId.toString(), firstName, lastName, email, hashedpassword,false,false);
             return userId;
         }catch(Exception e){
             throw new EtAuthException("Invalid Details. Failed to create new User");
@@ -102,13 +106,42 @@ public class UserRepositoryImpl implements UserRepository{
             return null;
         }
     }
+
+    @Override
+    public String updateIntroTest(UUID userId, boolean introTestTaken) {
+        try {
+            User user= jdbcTemplate.queryForObject(SQL_FIND_BY_USERID, new Object[] {userId.toString()},userRowMapper);
+            jdbcTemplate.update(SQL_UPDATE_INTRO_TEST,introTestTaken,userId.toString() );
+            return userId.toString();
+        }
+
+        catch(EmptyResultDataAccessException e){
+            throw new EtAuthException("Failed to Update Intro test Seen");
+        }
+    }
+
+    @Override
+    public String updateIntroSeen(UUID userId, boolean introSeen) {
+        try {
+            User user= jdbcTemplate.queryForObject(SQL_FIND_BY_USERID, new Object[] {userId.toString()},userRowMapper);
+            jdbcTemplate.update(SQL_UPDATE_INTRO_SEEN,introSeen,userId.toString() );
+            return userId.toString();
+        }
+
+        catch(EmptyResultDataAccessException e){
+            throw new EtAuthException("Failed to Update Intro test Seen");
+        }
+    }
+
     private RowMapper<User> userRowMapper =((rs, rowNum)->{
         return new User(
                 UUID.fromString(rs.getString("USER_ID")),
                 rs.getString("FIRST_NAME"),
                 rs.getString("LAST_NAME"),
                 rs.getString("EMAIL"),
-                rs.getString("PASSWORD")
+                rs.getString("PASSWORD"),
+                rs.getBoolean("INTRO_TAKEN"),
+                rs.getBoolean("INTRO_SEEN")
         );
     });
 }

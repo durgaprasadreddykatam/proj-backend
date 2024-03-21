@@ -16,7 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserResource {
     @Autowired
     UserService userService;
@@ -54,6 +54,22 @@ public class UserResource {
         User user=userService.updateUser(firstname,lastname,email);
         return "User Details have been Sucessfully Updated for user :"+user.getEmail();
     }
+    @PostMapping("/introTestUpdate")
+    public String updateIntroTaken(@RequestBody Map<String,Object> userMap){
+        String userId=(String) userMap.get("userId");
+        boolean introTestTaken =(boolean) userMap.get("introTestTaken");
+        String user=userService.updateIntroTest(userId,introTestTaken);
+        return "Intro Test has Been Marked as Completed for User:"+user;
+
+    }
+    @PostMapping("/introSeenUpdate")
+    public String updateIntroSeen(@RequestBody Map<String,Object> userMap){
+        String userId=(String) userMap.get("userId");
+        boolean introSeen =(boolean) userMap.get("introSeen");
+        String user=userService.updateIntroSeen(userId,introSeen);
+        return "Intro Seen has Been Marked as Completed for User:"+user;
+
+    }
     private Map<String,String> generateJwtToken(User user){
         long timestamp=System.currentTimeMillis();
         String token= Jwts.builder().signWith(SignatureAlgorithm.HS256, Constants.API_SECRET_KEY)
@@ -63,6 +79,8 @@ public class UserResource {
                 .claim("email",user.getEmail())
                 .claim("firstname",user.getFirstName())
                 .claim("lastname",user.getLastName())
+                .claim("introSeen",user.isIntroSeen())
+                .claim("introTestTaken",user.isIntroTestTaken())
                 .compact();
         Map <String,String> map=new HashMap<>();
         map.put("token",token);

@@ -34,7 +34,7 @@ public class UserResourceTest {
     public void testUserLogin_Success() {
         String email = "test@example.com";
         String password = "password";
-        User user = new User(UUID.randomUUID(), "John", "Doe", email, password);
+        User user = new User(UUID.randomUUID(), "John", "Doe", email, password,false,false);
         when(userService.validateUser(email, password)).thenReturn(user);
 
         Map<String, Object> userMap = new HashMap<>();

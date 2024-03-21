@@ -5,12 +5,15 @@ import java.util.UUID;
 
 public class User {
 
-    public User(UUID userId, String firstName, String lastName, String email, String password) {
+    public User(UUID userId, String firstName, String lastName, String email, String password,boolean introTestTaken,boolean introSeen) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.introTestTaken=introTestTaken;
+        this.introSeen=introSeen;
+
     }
 
 
@@ -19,6 +22,25 @@ public class User {
     private String lastName;
     private String email;
     private String password;
+
+    public boolean isIntroTestTaken() {
+        return introTestTaken;
+    }
+
+    public void setIntroTestTaken(boolean introTestTaken) {
+        this.introTestTaken = introTestTaken;
+    }
+
+    public boolean isIntroSeen() {
+        return introSeen;
+    }
+
+    public void setIntroSeen(boolean introSeen) {
+        this.introSeen = introSeen;
+    }
+
+    private boolean introTestTaken;
+    private boolean introSeen;
 
     public User() {
         super();

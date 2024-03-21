@@ -18,4 +18,7 @@ public interface UserRepository {
     User findById(UUID userId);
 
 
+    String updateIntroTest(UUID userId, boolean introTestTaken);
+
+    String updateIntroSeen(UUID userId, boolean introSeen);
 }
