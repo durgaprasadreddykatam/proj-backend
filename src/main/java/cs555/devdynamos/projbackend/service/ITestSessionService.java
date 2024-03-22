@@ -1,2 +1,12 @@
-package cs555.devdynamos.projbackend.service;public interface ITestSessionService {
+package cs555.devdynamos.projbackend.service;
+
+import cs555.devdynamos.projbackend.domain.TestSession;
+
+import java.sql.Timestamp;
+import java.util.UUID;
+
+public interface ITestSessionService {
+    public UUID createNewSession(TestSession session);
+
+    public void updateSessionEndTime(UUID sessionId, Timestamp sessionEndTime);
 }
