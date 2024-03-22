@@ -66,3 +66,87 @@ This Java backend server provides API endpoints for user registration and authen
   "email": ""
 }
 ```
+
+### Adding a Question for Displaying it to User
+- **Endpoint**: `https://liedetector.azurewebsites.net/api/questions/add`
+- **Method**:`POST`
+  **Json Form Data**
+```json
+
+{
+  "question": "",
+  "answer": "",
+  "questionType": "Arithmetic" or "Image" or "Random"
+}
+
+```
+
+### Delete a Question
+- **Endpoint**: `https://liedetector.azurewebsites.net/api/questions/delete`
+- **Method**:`POST`
+  **Json Form Data**
+```json
+
+{
+  "questionId": ""
+}
+
+```
+### Update Question  for Displaying it to User
+- **Endpoint**: `https://liedetector.azurewebsites.net/api/questions/update`
+- **Method**:`POST`
+  **Json Form Data**
+```json
+
+{
+  "questionId": "",
+  "question": "",
+  "answer": "",
+  "questionType": ""
+}
+
+```
+### Add Multiple Questions  for Displaying it to User
+- **Endpoint**: `https://liedetector.azurewebsites.net/api/questions/addQuestions`
+- **Method**:`POST`
+  **Json Form Data**
+```json
+
+[
+  {
+    "question": "",
+    "answer": "",
+    "questionType": ""
+  },
+  {
+    "question": "",
+    "answer": "",
+    "questionType": ""
+  }
+]
+
+```
+
+### Fetch Question   for Displaying it to User Using questionId
+- **Endpoint**: `https://liedetector.azurewebsites.net/api/questions/fetchQuestion`
+- **Method**:`GET`
+  **Json Form Data**
+```json
+
+{
+  "questionId": ""
+}
+
+```
+### Fetch List of Questions
+- **Endpoint**: `https://liedetector.azurewebsites.net/api/questions/fetchQuestionList`
+- **Method**:`GET`
+  **Json Form Data**
+```json
+
+{
+  "type": "",
+  "count": ""
+}
+
+```
