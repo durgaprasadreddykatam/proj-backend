@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -35,7 +34,7 @@ public class UserResourceTest {
         String email = "test@example.com";
         String password = "password";
         User user = new User(UUID.randomUUID(), "John", "Doe", email, password,false,false);
-        when(userService.validateUser(email, password)).thenReturn(user);
+        when(userService.validateUser(user)).thenReturn(user);
 
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("email", email);
@@ -49,14 +48,14 @@ public class UserResourceTest {
 
     @Test
     public void testUserLogin_InvalidCredentials() {
-
-        String email = "test@example.com";
-        String password = "password";
-        when(userService.validateUser(email, password)).thenThrow(new EtAuthException("Invalid email/password"));
+        User user =new User();
+        user.setEmail("test@example.com");
+        user.setPassword("password");
+        when(userService.validateUser(user)).thenThrow(new EtAuthException("Invalid email/password"));
 
         Map<String, Object> userMap = new HashMap<>();
-        userMap.put("email", email);
-        userMap.put("password", password);
+        userMap.put("email", user.getEmail());
+        userMap.put("password", user.getUserId());
         EtAuthException exception = assertThrows(EtAuthException.class, () -> {
             userResource.userLogin(userMap);
         });

@@ -23,36 +23,36 @@ public class UserResource {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String,String>> userLogin(@RequestBody Map<String,Object> userMap){
-        String email=(String) userMap.get("email");
-        String password=(String) userMap.get("password");
-        User user=userService.validateUser(email,password);
-        return new ResponseEntity<>(generateJwtToken(user), HttpStatus.OK);
+        User user =new User();
+        user.setEmail((String) userMap.get("email"));
+        user.setPassword((String) userMap.get("password"));
+        User userDet=userService.validateUser(user);
+        return new ResponseEntity<>(generateJwtToken(userDet), HttpStatus.OK);
     }
     @PostMapping("/register")
     public ResponseEntity<Map<String,String>> registerUser(@RequestBody Map<String,Object> userMap){
-        String firstname=(String) userMap.get("firstName");
-        String lastname=(String) userMap.get("lastName");
-        String email=(String) userMap.get("email");
-        String password=(String) userMap.get("password");
-        User user =userService.registerUser(firstname,lastname,email,password);
-        return new ResponseEntity<>(generateJwtToken(user), HttpStatus.OK);
+        User user =new User();
+        user.setEmail((String) userMap.get("email"));
+        user.setFirstName((String) userMap.get("firstName"));
+        user.setLastName((String) userMap.get("lastName"));
+        user.setPassword((String) userMap.get("password"));
+        User userDetails =userService.registerUser(user);
+        return new ResponseEntity<>(generateJwtToken(userDetails), HttpStatus.OK);
     }
     @PostMapping("/update")
     public String updateUser(@RequestBody Map<String,Object> userMap){
-        String firstname=(String) userMap.get("firstName");
-        String lastname=(String) userMap.get("lastName");
-        String email=(String) userMap.get("email");
-        String password=(String) userMap.get("password");
-        User user=userService.updateUser(firstname,lastname,email,password);
-        return "User Details have been Sucessfully Updated for user :"+user.getEmail();
-    }
-    @PostMapping("/update1")
-    public String updateUser1(@RequestBody Map<String,Object> userMap){
-        String firstname=(String) userMap.get("firstName");
-        String lastname=(String) userMap.get("lastName");
-        String email=(String) userMap.get("email");
-        User user=userService.updateUser(firstname,lastname,email);
-        return "User Details have been Sucessfully Updated for user :"+user.getEmail();
+        User user=new User();
+        if (userMap.containsKey("password")) {
+            user.setPassword((String) userMap.get("password"));
+        }
+        if(userMap.containsKey("email")){
+            user.setFirstName((String) userMap.get("firstName"));
+            user.setLastName((String) userMap.get("lastName"));
+            user.setEmail((String) userMap.get("email"));
+
+        }
+        User userDet=userService.updateUser(user);
+        return "User Details have been Sucessfully Updated for user :"+userDet.getEmail();
     }
     @PostMapping("/introTestUpdate")
     public String updateIntroTaken(@RequestBody Map<String,Object> userMap){

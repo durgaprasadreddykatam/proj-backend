@@ -40,22 +40,22 @@ public class UserRepositoryImpl implements UserRepository{
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public UUID create(String firstName, String lastName, String email, String password) throws EtAuthException {
-        String hashedpassword = BCrypt.hashpw(password,BCrypt.gensalt(7));
+    public UUID create(User user) throws EtAuthException {
         try{
-            UUID userId=UUID.randomUUID();
-            jdbcTemplate.update(SQL_CREATE, userId.toString(), firstName, lastName, email, hashedpassword,false,false);
-            return userId;
+            jdbcTemplate.update(SQL_CREATE, user.getUserId().toString(), user.getFirstName(),
+                    user.getLastName(), user.getEmail(), user.getPassword(),user.isIntroTestTaken(),user.isIntroSeen());
+            return user.getUserId();
         }catch(Exception e){
             throw new EtAuthException("Invalid Details. Failed to create new User");
         }
     }
     @Override
-    public User update(String firstName, String lastName, String email, String password) throws EtAuthException{
-        String hashedPassword=BCrypt.hashpw(password,BCrypt.gensalt(7));
+    public User update(User user) throws EtAuthException{
         try {
-            User user= jdbcTemplate.queryForObject(SQL_FINDBY_EMAIL, new Object[] {email},userRowMapper);
-            jdbcTemplate.update(SQL_UPDATE_USER, firstName, lastName, hashedPassword, email);
+            if(user.getPassword()==null)
+                jdbcTemplate.update(SQL_UPDATE_USER1, user.getFirstName(), user.getLastName(), user.getEmail());
+            else
+                jdbcTemplate.update(SQL_UPDATE_USER, user.getFirstName(), user.getLastName(), user.getPassword(), user.getEmail());
             return user;
         }
 
@@ -64,27 +64,13 @@ public class UserRepositoryImpl implements UserRepository{
         }
     }
 
-    @Override
-    public User update(String firstName, String lastName, String email) throws EtAuthException {
 
-        try {
-            User user= jdbcTemplate.queryForObject(SQL_FINDBY_EMAIL, new Object[] {email},userRowMapper);
-            jdbcTemplate.update(SQL_UPDATE_USER1, firstName, lastName, email);
-            return user;
-        }
-
-        catch(EmptyResultDataAccessException e){
-            throw new EtAuthException("Email Cannot be Updated");
-        }
-    }
 
     @Override
-    public User findByEmailAndPassword(String email, String password) throws EtAuthException {
+    public User findByEmail(User user) throws EtAuthException {
         try {
-            User user= jdbcTemplate.queryForObject(SQL_FINDBY_EMAIL, new Object[] {email},userRowMapper);
-            if(!BCrypt.checkpw(password,user.getPassword()))
-                throw new EtAuthException("Invalid email/password");
-            return user;
+            User userDet= jdbcTemplate.queryForObject(SQL_FINDBY_EMAIL, new Object[] {user.getEmail()},userRowMapper);
+            return userDet;
         }
 
         catch(EmptyResultDataAccessException e){

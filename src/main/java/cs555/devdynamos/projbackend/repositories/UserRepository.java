@@ -7,11 +7,10 @@ import java.util.UUID;
 
 public interface UserRepository {
 
-    UUID create(String firstName,String lastName,String email,String password) throws EtAuthException;
-    User update(String firstName,String lastName,String email,String password) throws EtAuthException;
+    UUID create(User user) throws EtAuthException;
+    User update(User user) throws EtAuthException;
 
-    User update(String firstName,String lastName,String email) throws EtAuthException;
-    User findByEmailAndPassword(String email,String password) throws EtAuthException;
+    User findByEmail(User user) throws EtAuthException;
 
     Integer getCountByEmail(String email);
 

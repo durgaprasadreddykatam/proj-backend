@@ -7,13 +7,11 @@ import java.util.UUID;
 
 public interface UserService {
 
-    User validateUser(String email, String password) throws EtAuthException;
+    User validateUser(User user) throws EtAuthException;
 
-    User registerUser( String firstName, String lastName, String email, String password) throws EtAuthException;
+    User registerUser( User user) throws EtAuthException;
 
-    User updateUser( String firstName, String lastName, String email, String password) throws EtAuthException;
-
-    User updateUser( String firstName, String lastName, String email) throws EtAuthException;
+    User updateUser( User user) throws EtAuthException;
 
     String updateIntroTest(String userId, boolean introTestTaken);
 

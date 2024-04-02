@@ -3,6 +3,7 @@ package cs555.devdynamos.projbackend.service;
 import cs555.devdynamos.projbackend.domain.User;
 import cs555.devdynamos.projbackend.exceptions.EtAuthException;
 import cs555.devdynamos.projbackend.repositories.UserRepository;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,37 +19,44 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
 
     @Override
-    public User validateUser(String email, String password) throws EtAuthException {
-        if (email != null) email = email.toLowerCase();
-        return userRepository.findByEmailAndPassword(email, password);
+    public User validateUser(User user) throws EtAuthException {
+            if (user.getEmail() != null)
+            user.setEmail(user.getEmail().toLowerCase());
+            User userDet=userRepository.findByEmail(user);
+            if(!BCrypt.checkpw(user.getPassword(),userDet.getPassword()))
+                throw new EtAuthException("Invalid email/password");
+
+        return userDet;
     }
 
     @Override
-    public User registerUser(String firstName, String lastName, String email, String password) throws EtAuthException {
+    public User registerUser(User user) throws EtAuthException {
+        String hashedPassword = BCrypt.hashpw(user.getPassword(),BCrypt.gensalt(7));
         Pattern pattern = Pattern.compile("^(.+)@(.+)$");
-        if (email != null) email = email.toLowerCase();
-        if (!pattern.matcher(email).matches()) throw new EtAuthException("Invalid email format");
-        Integer count = userRepository.getCountByEmail(email);
+        if (user.getEmail() != null)
+            user.setEmail(user.getEmail().toLowerCase());
+        if (!pattern.matcher(user.getEmail()).matches()) throw new EtAuthException("Invalid email format");
+        Integer count = userRepository.getCountByEmail(user.getEmail());
         if (count > 0) throw new EtAuthException("Email already in use");
-        UUID userId = userRepository.create(firstName, lastName, email, password);
+        user.setPassword(hashedPassword);
+        user.setUserId(UUID.randomUUID());
+        user.setIntroTestTaken(false);
+        user.setIntroSeen(false);
+        UUID userId = userRepository.create(user);
         return userRepository.findById(userId);
     }
 
     @Override
-    public User updateUser(String firstName, String lastName, String email, String password) throws EtAuthException {
-        if (email != null) email = email.toLowerCase();
-        Integer count = userRepository.getCountByEmail(email);
+    public User updateUser(User user) throws EtAuthException {
+        if (user.getEmail() != null)
+            user.setEmail(user.getEmail().toLowerCase());
+        Integer count = userRepository.getCountByEmail(user.getEmail());
         if (count < 0) throw new EtAuthException("Email id not in Use");
-        return userRepository.update(firstName, lastName, email, password);
-    }
-
-    @Override
-    public User updateUser(String firstName, String lastName, String email) throws EtAuthException {
-        if (email != null) email = email.toLowerCase();
-        Integer count = userRepository.getCountByEmail(email);
-        if (count < 0) throw new EtAuthException("Email id not in Use");
-        return userRepository.update(firstName, lastName, email);
-
+        if(user.getPassword()!=null) {
+            String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt(7));
+            user.setPassword(hashedPassword);
+        }
+            return userRepository.update(user);
     }
 
     @Override
