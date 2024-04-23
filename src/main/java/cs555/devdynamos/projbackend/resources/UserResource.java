@@ -1,7 +1,7 @@
 package cs555.devdynamos.projbackend.resources;
 
 import cs555.devdynamos.projbackend.Constants;
-import cs555.devdynamos.projbackend.domain.User;
+import cs555.devdynamos.projbackend.Entities.User;
 import cs555.devdynamos.projbackend.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

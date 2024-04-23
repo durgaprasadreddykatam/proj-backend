@@ -1,6 +1,6 @@
 package cs555.devdynamos.projbackend.resources;
 
-import cs555.devdynamos.projbackend.domain.EegData;
+import cs555.devdynamos.projbackend.Entities.EegData;
 import cs555.devdynamos.projbackend.service.EegDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,12 +14,11 @@ import java.util.UUID;
 @RequestMapping("/eegdata")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class EegDataController {
-    @Autowired
-    private EegDataService eegDataService;
-
-    @PutMapping
-    public ResponseEntity saveEegdata(@RequestBody Map<String,Object> map){
-        System.out.println(map);
+//    @Autowired
+//    private EegDataService eegDataService;
+//
+//    @PutMapping
+//    public ResponseEntity saveEegdata(@RequestBody Map<String,Object> map){
 //        UUID sessionId= UUID.fromString((String)map.get("sessionId"));
 //        double AF3 =(Double)map.get("EEG.AF3");
 //        double T7=(Double)map.get("EEG.T7");
@@ -28,8 +27,7 @@ public class EegDataController {
 //        double AF4=(Double)map.get("EEG.AF4");
 //        EegData data=new EegData(sessionId,AF3,T7,Pz,T8,AF4);
 //        boolean value=eegDataService.updateeegData(data);
+//        return new ResponseEntity<>(Map.of("message",value), HttpStatus.OK);//change "value" to value
 //
-        return new ResponseEntity<>(Map.of("message","value"), HttpStatus.OK);//change "value" to value
-
-    }
+//    }
 }

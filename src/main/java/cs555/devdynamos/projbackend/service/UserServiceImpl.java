@@ -1,13 +1,15 @@
 package cs555.devdynamos.projbackend.service;
 
-import cs555.devdynamos.projbackend.domain.User;
+import cs555.devdynamos.projbackend.Entities.User;
 import cs555.devdynamos.projbackend.exceptions.EtAuthException;
-import cs555.devdynamos.projbackend.repositories.UserRepository;
+import cs555.devdynamos.projbackend.repositories.UserRepoJpa;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -16,13 +18,12 @@ import java.util.regex.Pattern;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    UserRepository userRepository;
-
+    private UserRepoJpa repository;
     @Override
     public User validateUser(User user) throws EtAuthException {
             if (user.getEmail() != null)
             user.setEmail(user.getEmail().toLowerCase());
-            User userDet=userRepository.findByEmail(user);
+            User userDet=repository.findByEmail(user.getEmail());
             if(!BCrypt.checkpw(user.getPassword(),userDet.getPassword()))
                 throw new EtAuthException("Invalid email/password");
 
@@ -36,33 +37,34 @@ public class UserServiceImpl implements UserService {
         if (user.getEmail() != null)
             user.setEmail(user.getEmail().toLowerCase());
         if (!pattern.matcher(user.getEmail()).matches()) throw new EtAuthException("Invalid email format");
-        Integer count = userRepository.getCountByEmail(user.getEmail());
+        Integer count = repository.getCountByEmail(user.getEmail());
         if (count > 0) throw new EtAuthException("Email already in use");
         user.setPassword(hashedPassword);
-        user.setUserId(UUID.randomUUID());
         user.setIntroTestTaken(false);
         user.setIntroSeen(false);
-        return  userRepository.create(user);
+        return  repository.save(user);
     }
 
     @Override
     public User updateUser(User user) throws EtAuthException {
         if (user.getEmail() != null)
             user.setEmail(user.getEmail().toLowerCase());
-        Integer count = userRepository.getCountByEmail(user.getEmail());
-        if (count < 0) throw new EtAuthException("Email id not in Use");
         if(user.getPassword()!=null) {
             String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt(7));
             user.setPassword(hashedPassword);
         }
-            return userRepository.update(user);
+            return repository.save(user);
     }
 
     @Override
-    public String updateIntroTest(String userId, boolean introTestTaken) throws EtAuthException {
-        User user=userRepository.findById(UUID.fromString(userId));
-        if(user !=null) {
-            return userRepository.updateIntroTest(UUID.fromString(userId),introTestTaken);
+    public String updateIntroTest(String userId, boolean introTestTaken) {
+        UUID id=UUID.fromString(userId);
+        Optional<User> optionalUser = repository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setIntroTestTaken(introTestTaken);
+            repository.save(user);
+            return "IntroTest updated successfully for user with ID: " + userId;
         }
         else{
             throw new EtAuthException("Invalid User Id");
@@ -70,13 +72,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String updateIntroSeen(String userId, boolean introSeen) throws EtAuthException {
-        User user=userRepository.findById(UUID.fromString(userId));
-        if(user !=null) {
-            return userRepository.updateIntroSeen(UUID.fromString(userId),introSeen);
+    public String updateIntroSeen(String userId, boolean introSeen) {
+        UUID id=UUID.fromString(userId);
+        Optional<User> optionalUser = repository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setIntroSeen(introSeen);
+            repository.save(user);
+            return "IntroSeen updated successfully for user with ID: " + userId;
         }
         else{
             throw new EtAuthException("Invalid User Id");
         }
     }
+
+
 }

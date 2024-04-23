@@ -1,15 +1,13 @@
 package cs555.devdynamos.projbackend.Entities;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
 
-@Entity
+@Entity(name="userdetails")
 public class User {
 
-    public User(UUID userId, String firstName, String lastName, String email, String password,boolean introTestTaken,boolean introSeen) {
+    public User(UUID userId, String firstName, String lastName, String email, String password, boolean introTestTaken, boolean introSeen) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -21,6 +19,7 @@ public class User {
     }
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID userId;
     private String firstName;
     private String lastName;

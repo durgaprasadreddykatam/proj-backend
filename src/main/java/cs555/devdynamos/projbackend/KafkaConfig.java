@@ -7,11 +7,11 @@ import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
 public class KafkaConfig {
-    @Bean
-    public NewTopic topic(){
-
-        return  TopicBuilder.name("EegData").build();
-
-    }
+//    @Bean
+//    public NewTopic topic(){
+//
+//        return  TopicBuilder.name("EegData").build();
+//
+//    }
 }
 

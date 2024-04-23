@@ -1,6 +1,6 @@
 package cs555.devdynamos.projbackend.service;
 
-import cs555.devdynamos.projbackend.domain.TestSession;
+import cs555.devdynamos.projbackend.Entities.TestSession;
 
 import java.sql.Timestamp;
 import java.util.UUID;

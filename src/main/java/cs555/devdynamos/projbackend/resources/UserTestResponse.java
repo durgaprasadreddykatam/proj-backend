@@ -1,8 +1,8 @@
 package cs555.devdynamos.projbackend.resources;
 
-import cs555.devdynamos.projbackend.domain.Question;
-import cs555.devdynamos.projbackend.domain.TestSession;
-import cs555.devdynamos.projbackend.domain.UserResponse;
+import cs555.devdynamos.projbackend.Entities.Question;
+import cs555.devdynamos.projbackend.Entities.TestSession;
+import cs555.devdynamos.projbackend.Entities.UserResponse;
 import cs555.devdynamos.projbackend.service.IQuestionService;
 import cs555.devdynamos.projbackend.service.IResponseService;
 import cs555.devdynamos.projbackend.service.ITestSessionService;
@@ -34,7 +34,9 @@ public class UserTestResponse {
         Timestamp startTimeStamp =Timestamp.valueOf((String)responseMap.get("startTimeStamp"));
         String type=(String)responseMap.get("type");
         List<Question> questions = questionService.fetchQuestions(type,(Integer)responseMap.get("count"));
-        TestSession testSession=new TestSession(UUID.randomUUID(),userId,startTimeStamp);
+        TestSession testSession=new TestSession();
+        testSession.setUserId(UUID.fromString(userId));
+        testSession.setSessionStartTimeStamp(startTimeStamp);
         UUID sessionId = sessionService.createNewSession(testSession);
         Map<String, Object> response = new HashMap<>();
         response.put("sessionId", sessionId);
@@ -52,13 +54,15 @@ public class UserTestResponse {
         String userId=(String)responseMap.get("userId");
         sessionService.updateSessionEndTime(sessionId,sessionEndTime);
         for(Map<String, Object> questionMap :questions){
-            UUID userResponseID =UUID.randomUUID();
-            UUID questionId = UUID.fromString((String) questionMap.get("questionId"));
-            String userAnswer = (String) questionMap.get("userAnswer");
-            String userRole = (String) questionMap.get("userRole");
-            Timestamp questionStartTimeStamp = Timestamp.valueOf((String) questionMap.get("questionStartTime"));
-            Timestamp questionEndTimeStamp = Timestamp.valueOf((String) questionMap.get("questionEndTime"));
-            UserResponse userResponse=new UserResponse(userResponseID,sessionId,userId, questionId,userAnswer,userRole,questionStartTimeStamp,questionEndTimeStamp);
+            UserResponse userResponse=new UserResponse();
+            userResponse.setSessionID(sessionId);
+            userResponse.setUserID(UUID.fromString(userId));
+            userResponse.setQuestionID(UUID.fromString((String) questionMap.get("questionId")));
+            userResponse.setUserAnswer((String) questionMap.get("userAnswer"));
+            userResponse.setRole((String) questionMap.get("userRole"));
+            userResponse.setQuestionStartTimeStamp(Timestamp.valueOf((String) questionMap.get("questionStartTime")));
+            userResponse.setQuestionEndTimeStamp(Timestamp.valueOf((String) questionMap.get("questionEndTime")));
+
             responseService.addUserResponse(userResponse);
 
         }

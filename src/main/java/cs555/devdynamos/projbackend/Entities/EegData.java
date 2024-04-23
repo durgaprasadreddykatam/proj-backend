@@ -1,4 +1,4 @@
-package cs555.devdynamos.projbackend.domain;
+package cs555.devdynamos.projbackend.Entities;
 import java.util.UUID;
 public class EegData {
 

@@ -1,11 +1,9 @@
 package cs555.devdynamos.projbackend.QestionsTests;
 
 
-import cs555.devdynamos.projbackend.domain.Question;
+import cs555.devdynamos.projbackend.Entities.Question;
 import cs555.devdynamos.projbackend.resources.QuestionResource;
-import cs555.devdynamos.projbackend.resources.UserResource;
 import cs555.devdynamos.projbackend.service.IQuestionService;
-import cs555.devdynamos.projbackend.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

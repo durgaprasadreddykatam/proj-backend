@@ -1,7 +1,6 @@
 package cs555.devdynamos.projbackend.resources;
 
-import cs555.devdynamos.projbackend.domain.Question;
-import cs555.devdynamos.projbackend.domain.User;
+import cs555.devdynamos.projbackend.Entities.Question;
 import cs555.devdynamos.projbackend.service.IQuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +20,10 @@ public class QuestionResource {
 
     @PostMapping("/add")
     public ResponseEntity<String> addQuestion(@RequestBody Map<String,Object> questionMap){
-        Question question = new Question(UUID.randomUUID(), (String) questionMap.get("question"), (String) questionMap.get("answer"), (String) questionMap.get("questionType"));
+        Question question = new Question();
+        question.setQuestion((String) questionMap.get("question"));
+        question.setAnswer((String) questionMap.get("answer"));
+        question.setQuestionType((String) questionMap.get("questionType"));
         UUID questionId = questionService.addQuestion(question);
         return new ResponseEntity<>("Question added successfully with ID: " + questionId, HttpStatus.OK);
     }
@@ -29,17 +31,17 @@ public class QuestionResource {
 
     @PostMapping("/delete")
     public ResponseEntity<String> deleteQuestion(@RequestBody Map<String,Object> questionMap){
-        String questionId = questionService.deleteQuestion((String)questionMap.get("questionId"));
+         questionService.deleteQuestion(UUID.fromString((String) questionMap.get("questionId")));
         return new ResponseEntity<>("Question deleted successfully with ID: " , HttpStatus.OK);
     }
     @PostMapping("/update")
     public ResponseEntity<String> updateQuestion(@RequestBody Map<String,Object> questionMap){
-        UUID questionId = UUID.fromString((String) questionMap.get("questionId"));
-        String question = (String) questionMap.get("question");
-        String answer = (String) questionMap.get("answer");
-        String questionType = (String) questionMap.get("questionType");
-        Question questionObj = new Question(questionId, question, answer, questionType);
-        UUID updatedQuestionId = questionService.updateQuestion(questionObj);
+        Question question=new Question();
+        question.setQuestionId(UUID.fromString((String) questionMap.get("questionId")));
+        question.setQuestion((String) questionMap.get("question"));
+        question.setAnswer((String) questionMap.get("answer"));
+        question.setQuestionType((String) questionMap.get("questionType"));
+        UUID updatedQuestionId = questionService.updateQuestion(question);
         return new ResponseEntity<>("Question Updated successfully with ID: " + updatedQuestionId, HttpStatus.OK);}
     @PostMapping("/addQuestions")
     public ResponseEntity<String> addQuestions(@RequestBody List<Question> questions) {
@@ -48,7 +50,7 @@ public class QuestionResource {
     }
     @GetMapping("/fetchQuestion")
     public ResponseEntity<Question> fetchQuestion(@RequestBody Map<String,Object> questionMap) {
-        Question question = questionService.fetchQuestion((String) questionMap.get("questionId") );
+        Question question = questionService.fetchQuestion(UUID.fromString((String) questionMap.get("questionId")));
         return new ResponseEntity<>(question, HttpStatus.OK);
     }
     @GetMapping("/fetchQuestionList")
