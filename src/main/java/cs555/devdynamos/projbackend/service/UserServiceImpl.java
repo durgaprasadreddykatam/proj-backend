@@ -42,8 +42,7 @@ public class UserServiceImpl implements UserService {
         user.setUserId(UUID.randomUUID());
         user.setIntroTestTaken(false);
         user.setIntroSeen(false);
-        UUID userId = userRepository.create(user);
-        return userRepository.findById(userId);
+        return  userRepository.create(user);
     }
 
     @Override

@@ -1,8 +1,12 @@
-package cs555.devdynamos.projbackend.domain;
+package cs555.devdynamos.projbackend.Entities;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 import java.util.UUID;
 
 
+@Entity
 public class User {
 
     public User(UUID userId, String firstName, String lastName, String email, String password,boolean introTestTaken,boolean introSeen) {
@@ -16,7 +20,7 @@ public class User {
 
     }
 
-
+    @Id
     private UUID userId;
     private String firstName;
     private String lastName;
