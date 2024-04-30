@@ -3,8 +3,8 @@ package cs555.devdynamos.projbackend.Entities;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
-@Entity
-public class EegDataTestTruth {
+@Entity(name = "eeg_test_lie")
+public class EegDataTestLie {
 
     @Id
     private long rowNumber;

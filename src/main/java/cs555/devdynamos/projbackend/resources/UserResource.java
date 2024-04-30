@@ -2,6 +2,7 @@ package cs555.devdynamos.projbackend.resources;
 
 import cs555.devdynamos.projbackend.Constants;
 import cs555.devdynamos.projbackend.Entities.User;
+import cs555.devdynamos.projbackend.service.MockEegDataService;
 import cs555.devdynamos.projbackend.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
@@ -20,6 +22,8 @@ import java.util.Map;
 public class UserResource {
     @Autowired
     UserService userService;
+
+
 
     @PostMapping("/login")
     public ResponseEntity<Map<String,String>> userLogin(@RequestBody Map<String,Object> userMap){
@@ -40,7 +44,7 @@ public class UserResource {
         return new ResponseEntity<>(generateJwtToken(userDetails), HttpStatus.OK);
     }
     @PostMapping("/update")
-    public String updateUser(@RequestBody Map<String,Object> userMap){
+    public ResponseEntity<Map<String,String>> updateUser(@RequestBody Map<String,Object> userMap){
         User user=new User();
         if (userMap.containsKey("password")) {
             user.setPassword((String) userMap.get("password"));
@@ -52,22 +56,30 @@ public class UserResource {
 
         }
         User userDet=userService.updateUser(user);
-        return "User Details have been Sucessfully Updated for user :"+userDet.getEmail();
+        return new ResponseEntity<>(generateJwtToken(userDet), HttpStatus.OK);
     }
     @PostMapping("/introTestUpdate")
-    public String updateIntroTaken(@RequestBody Map<String,Object> userMap){
-        String userId=(String) userMap.get("userId");
-        boolean introTestTaken =(boolean) userMap.get("introTestTaken");
-        String user=userService.updateIntroTest(userId,introTestTaken);
-        return "Intro Test has Been Marked as Completed for User:"+user;
+    public ResponseEntity<Map<String,String>> updateIntroTaken(@RequestBody Map<String,Object> userMap){
+        User user=userService.getUser(UUID.fromString((String) userMap.get("userId")));
+        if(userMap.containsKey("introTestTakenAsLiar")){
+            boolean introTestTakenAsLiar = (boolean) userMap.get("introTestTakenAsLiar");
+            user.setIntroTestTakenAsLiar(introTestTakenAsLiar);
+        }
+        else if(userMap.containsKey("introTestTakenAsTruthTeller")){
+            boolean introTestTakenAsTruthTeller =(boolean) userMap.get("introTestTakenAsTruthTeller");
+            user.setIntroTestTakenAsTruthTeller(introTestTakenAsTruthTeller);
+
+        }
+        User returnuser=userService.updateUserDetails(user);
+        return new ResponseEntity<>(generateJwtToken(returnuser), HttpStatus.OK);
 
     }
     @PostMapping("/introSeenUpdate")
-    public String updateIntroSeen(@RequestBody Map<String,Object> userMap){
+    public ResponseEntity<Map<String,String>> updateIntroSeen(@RequestBody Map<String,Object> userMap){
         String userId=(String) userMap.get("userId");
         boolean introSeen =(boolean) userMap.get("introSeen");
-        String user=userService.updateIntroSeen(userId,introSeen);
-        return "Intro Seen has Been Marked as Completed for User:"+user;
+        User user=userService.updateIntroSeen(userId,introSeen);
+        return new ResponseEntity<>(generateJwtToken(user), HttpStatus.OK);
 
     }
     private Map<String,String> generateJwtToken(User user){
@@ -80,7 +92,9 @@ public class UserResource {
                 .claim("firstname",user.getFirstName())
                 .claim("lastname",user.getLastName())
                 .claim("introSeen",user.isIntroSeen())
-                .claim("introTestTaken",user.isIntroTestTaken())
+                .claim("introTestTakenAsLiar",user.isIntroTestTakenAsLiar())
+                .claim("introTestTakenAsTruthTeller",user.isIntroTestTakenAsTruthTeller())
+                .claim("assignedNumber",user.getAssignedNumber())
                 .compact();
         Map <String,String> map=new HashMap<>();
         map.put("token",token);

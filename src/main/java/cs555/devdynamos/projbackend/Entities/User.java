@@ -7,14 +7,14 @@ import java.util.UUID;
 @Entity(name="userdetails")
 public class User {
 
-    public User(UUID userId, String firstName, String lastName, String email, String password, boolean introTestTaken, boolean introSeen) {
+    public User(UUID userId, String firstName, String lastName, String email, String password, boolean introTestTaken, boolean introSeen,int assignedNumber) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.introTestTaken=introTestTaken;
         this.introSeen=introSeen;
+        this.assignedNumber = assignedNumber;
 
     }
 
@@ -26,13 +26,24 @@ public class User {
     private String email;
     private String password;
 
-    public boolean isIntroTestTaken() {
-        return introTestTaken;
+    @Column(name = "assigned_number")
+    private int assignedNumber;
+
+    @Column(name = "intro_test_taken_as_liar")
+    private boolean introTestTakenAsLiar;
+    @Column(name = "intro_test_taken_as_truth_teller")
+    private boolean introTestTakenAsTruthTeller;
+    private boolean introSeen;
+
+    public int getAssignedNumber() {
+        return assignedNumber;
     }
 
-    public void setIntroTestTaken(boolean introTestTaken) {
-        this.introTestTaken = introTestTaken;
+    public void setAssignedNumber(int assignedNumber) {
+        this.assignedNumber = assignedNumber;
     }
+
+
 
     public boolean isIntroSeen() {
         return introSeen;
@@ -42,8 +53,23 @@ public class User {
         this.introSeen = introSeen;
     }
 
-    private boolean introTestTaken;
-    private boolean introSeen;
+    public boolean isIntroTestTakenAsLiar() {
+        return introTestTakenAsLiar;
+    }
+
+    public void setIntroTestTakenAsLiar(boolean introTestTakenAsLiar) {
+        this.introTestTakenAsLiar = introTestTakenAsLiar;
+    }
+
+    public boolean isIntroTestTakenAsTruthTeller() {
+        return introTestTakenAsTruthTeller;
+    }
+
+    public void setIntroTestTakenAsTruthTeller(boolean introTestTakenAsTruthTeller) {
+        this.introTestTakenAsTruthTeller = introTestTakenAsTruthTeller;
+    }
+
+
 
     public User() {
         super();

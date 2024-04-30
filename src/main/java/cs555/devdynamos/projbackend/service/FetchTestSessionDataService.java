@@ -24,36 +24,24 @@ public class FetchTestSessionDataService {
     UserResponseRepo userResponseRepo;
 
     public List<Map<String,Object>> fetchUserSessionData(UUID userId){
-        List<TestSession> sessionList=sessionRepo.findAllByUserIdIsOrderBySessionStartTimeStamp(userId);
+        List<TestSession> sessionList=sessionRepo.getByUserId(userId);
 
         List<Map<String,Object>> sessionDataList = new ArrayList<>();
         for (TestSession session : sessionList) {
             Map<String,Object> hashMap=new HashMap<>();
             UUID sessionId = session.getSessionId();
-            Timestamp startTimestamp=session.getSessionStartTimeStamp();
-            Timestamp endTimestamp=session.getSessionEndTimeStamp();
-            LocalDate sessionDate = startTimestamp.toLocalDateTime().toLocalDate();
-            LocalTime sessionStartTime = startTimestamp.toLocalDateTime().toLocalTime();
-            if(endTimestamp !=null){
-            LocalTime sessionEndTime = endTimestamp.toLocalDateTime().toLocalTime();
-                hashMap.put("sessionEndTime",sessionEndTime);
-            }
-            else {
-               String sessionEndTime=null;
-                hashMap.put("sessionEndTime",sessionEndTime);
-            }
+//            LocalDate sessionDate = startTimestamp.toLocalDateTime().toLocalDate();
+//            LocalTime sessionStartTime = startTimestamp.toLocalDateTime().toLocalTime();
 
 
             hashMap.put("sessionId",session.getSessionId());
-            hashMap.put("sessiondate",sessionDate);
-            hashMap.put("sessionStartTime",sessionStartTime);
-            hashMap.put("sessionStartTime",sessionStartTime);
-
+            hashMap.put("sessiondate",session.getSessionStartTimeStamp());
+            hashMap.put("sessionStartTime",session.getSessionStartTimeStamp());
             List<UserResponse> userDataList = userResponseRepo.getAllBySessionIDOrderByQuestionStartTimeStamp(sessionId);
             hashMap.put("userResponses",userDataList);
             sessionDataList.add(hashMap);
         }
-
+        System.out.println(sessionDataList);
         return sessionDataList;
 
     }

@@ -17,6 +17,27 @@ public class TestSession {
     Timestamp sessionStartTimeStamp;
     Timestamp sessionEndTimeStamp;
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getTestOrTrain() {
+        return testOrTrain;
+    }
+
+    public void setTestOrTrain(String testOrTrain) {
+        this.testOrTrain = testOrTrain;
+    }
+
+    @Column(name="role")
+    String role;
+    @Column(name="test_or_train")
+    String testOrTrain;
+
     public UUID getSessionId() {
         return sessionId;
     }

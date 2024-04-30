@@ -1,10 +1,13 @@
 package cs555.devdynamos.projbackend.Entities;
-import java.util.UUID;
-public class EegData {
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
+@Entity(name = "eeg_test_truth")
+public class EegDataTestTruth {
 
-    private UUID sessionId;
+    @Id
+    private long rowNumber;
 
     private double AF3;
     private double T7;
@@ -12,28 +15,51 @@ public class EegData {
     private double T8;
     private double AF4;
 
-    public EegData(UUID sessionId, double AF3, double t7, double pz, double t8, double AF4) {
-        this.sessionId = sessionId;
+    public long getRowNumber() {
+        return rowNumber;
+    }
+
+    public void setRowNumber(long rowNumber) {
+        this.rowNumber = rowNumber;
+    }
+
+    public double getAF3() {
+        return AF3;
+    }
+
+    public void setAF3(double AF3) {
         this.AF3 = AF3;
+    }
+
+    public double getT7() {
+        return T7;
+    }
+
+    public void setT7(double t7) {
         T7 = t7;
+    }
+
+    public double getPz() {
+        return Pz;
+    }
+
+    public void setPz(double pz) {
         Pz = pz;
+    }
+
+    public double getT8() {
+        return T8;
+    }
+
+    public void setT8(double t8) {
         T8 = t8;
+    }
+
+    public double getAF4() {
+        return AF4;
+    }
+
+    public void setAF4(double AF4) {
         this.AF4 = AF4;
-    }
-
-    public UUID getSessionId() {
-        return sessionId;
-    }
-
-    @Override
-    public String toString() {
-        return "EegData{" +
-                "sessionId=" + sessionId +
-                ", AF3=" + AF3 +
-                ", T7=" + T7 +
-                ", Pz=" + Pz +
-                ", T8=" + T8 +
-                ", AF4=" + AF4 +
-                '}';
     }
 }

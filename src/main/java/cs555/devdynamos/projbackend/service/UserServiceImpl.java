@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import java.util.Random;
 
 @Service
 @Transactional
@@ -40,7 +41,10 @@ public class UserServiceImpl implements UserService {
         Integer count = repository.getCountByEmail(user.getEmail());
         if (count > 0) throw new EtAuthException("Email already in use");
         user.setPassword(hashedPassword);
-        user.setIntroTestTaken(false);
+        Random random = new Random();
+        user.setAssignedNumber(random.nextInt(27) + 1);
+        user.setIntroTestTakenAsTruthTeller(false);
+        user.setIntroTestTakenAsLiar(false);
         user.setIntroSeen(false);
         return  repository.save(user);
     }
@@ -53,37 +57,43 @@ public class UserServiceImpl implements UserService {
             String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt(7));
             user.setPassword(hashedPassword);
         }
-            return repository.save(user);
+        repository.save(user);
+            return user;
     }
 
-    @Override
-    public String updateIntroTest(String userId, boolean introTestTaken) {
-        UUID id=UUID.fromString(userId);
-        Optional<User> optionalUser = repository.findById(id);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            user.setIntroTestTaken(introTestTaken);
-            repository.save(user);
-            return "IntroTest updated successfully for user with ID: " + userId;
-        }
-        else{
-            throw new EtAuthException("Invalid User Id");
-        }
-    }
+
 
     @Override
-    public String updateIntroSeen(String userId, boolean introSeen) {
+    public User updateIntroSeen(String userId, boolean introSeen) {
         UUID id=UUID.fromString(userId);
         Optional<User> optionalUser = repository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             user.setIntroSeen(introSeen);
             repository.save(user);
-            return "IntroSeen updated successfully for user with ID: " + userId;
+            return user;
         }
         else{
             throw new EtAuthException("Invalid User Id");
         }
+    }
+
+    @Override
+    public User getUser(UUID userId) {
+        Optional<User> optionalUser = repository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return user;
+        }
+        else{
+            throw new EtAuthException("Invalid User Id");
+        }
+
+    }
+
+    @Override
+    public User updateUserDetails(User user) {
+        return repository.save(user);
     }
 
 
