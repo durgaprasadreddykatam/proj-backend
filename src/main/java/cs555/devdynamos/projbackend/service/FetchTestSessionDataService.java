@@ -37,6 +37,7 @@ public class FetchTestSessionDataService {
             hashMap.put("sessionId",session.getSessionId());
             hashMap.put("sessiondate",session.getSessionStartTimeStamp());
             hashMap.put("sessionStartTime",session.getSessionStartTimeStamp());
+            hashMap.put("reslut",session.getResult());
             List<UserResponse> userDataList = userResponseRepo.getAllBySessionIDOrderByQuestionStartTimeStamp(sessionId);
             hashMap.put("userResponses",userDataList);
             sessionDataList.add(hashMap);

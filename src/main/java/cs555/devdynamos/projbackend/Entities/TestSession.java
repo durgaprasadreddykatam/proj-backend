@@ -37,6 +37,16 @@ public class TestSession {
     String role;
     @Column(name="test_or_train")
     String testOrTrain;
+    @Column(name = "result")
+    String result;
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
 
     public UUID getSessionId() {
         return sessionId;
